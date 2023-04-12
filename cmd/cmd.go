@@ -1,27 +1,35 @@
 package main
 
 import (
-	"flag"
 	"fmt"
-	"os"
 
-	egobpf_elf "github.com/hawkinsw/egobpf/v2/internal"
+	"github.com/hawkinsw/egobpf/v2/pkg/egobpf"
 )
 
-var (
-	binaryPath = flag.String("binaryPath", "a.out", "Path to the file from which methods are to be gathered.")
-)
+func hook_test() {
+	fmt.Printf("hook worked.\n")
+}
+
+//go:noinline
+func test() {
+	fmt.Printf("I am being tested.\n")
+}
 
 func main() {
-	flag.Parse()
-
-	_, err := egobpf_elf.NewElfGoProgram(*binaryPath)
+	hookables, err := egobpf.Initialize()
 
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Could not open the binary file: %v\n", err)
+		fmt.Printf("Oops: %v\n", err)
 		return
 	}
 
-	fmt.Printf("Successfully opened the binary file!\n")
+	test()
+	if testHookable, err := hookables.Find("main.test"); err != nil {
+		fmt.Printf("Oops: %v\n", err)
+		return
+	} else {
+		testHookable.HookTo(hook_test)
+		test()
+	}
 
 }
