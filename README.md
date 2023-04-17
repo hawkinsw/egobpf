@@ -4,12 +4,4 @@ Ever wanted bpf-like capabilities for your go program? Well, look no further tha
 
 ## Installation/Usage
 
-### gccgo
-
-1. Install `gccgo`
-
-```console
-$ sudo dnf install gccgo
-```
-
-2. Use `-pg -mfentry -mnop-mcount -mrecord-mcount`
+Unfortunately the library/tool is hopelessly buildable on by one person at this point. I promise documentation in the near future.
